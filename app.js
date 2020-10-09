@@ -141,7 +141,7 @@ setTimeout(() => {
 window.addEventListener('scroll', () => {
     const {clientHeight, scrollTop, scrollHeight} = document.documentElement;
   
-    if(clientHeight + scrollTop >= scrollHeight -10) {
+    if(clientHeight + scrollTop >= scrollHeight - 50) {
     getRecipes(searchValue)
     }
 })
