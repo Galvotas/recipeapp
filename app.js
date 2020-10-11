@@ -9,6 +9,7 @@ const nutriWrapper = document.querySelector('.nutri-wrapper')
 const ingWrapper = document.querySelector('.ing-wrapper')
 const mealImg = document.querySelector('.meal-img')
 const amountIngLine = document.querySelector('.amount-ing')
+const showMoreBtn = document.querySelector('.showMoreBtn')
 let amountCards = 0;
 let plusAmountCards = 10;
 let searchValue;
@@ -142,7 +143,16 @@ window.addEventListener('scroll', () => {
     const {clientHeight, scrollTop, scrollHeight} = document.documentElement;
   
     if(clientHeight + scrollTop >= scrollHeight - 50) {
-    getRecipes(searchValue)
+        showMoreBtn.classList.add('activeBtn')
+    } else {
+        showMoreBtn.classList.remove('activeBtn')
     }
 })
+showMoreBtn.addEventListener('click', () => {
+if(searchValue !== undefined) {
+    getRecipes(searchValue)
+}
+})
+
 //preventing fetch function execute more than once in a range of delay
+
