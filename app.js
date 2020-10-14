@@ -161,7 +161,7 @@ setTimeout(() => {
 window.addEventListener('scroll', () => {
     const {clientHeight, scrollTop, scrollHeight} = document.documentElement;
   
-    if(clientHeight + scrollTop >= scrollHeight - 10) {
+    if(clientHeight + scrollTop >= scrollHeight - 100) {
         showMoreBtn.classList.add('activeBtn')
     } else {
         showMoreBtn.classList.remove('activeBtn')
@@ -177,7 +177,7 @@ if(searchValue !== undefined) {
 
 function sortBy(recipes) {
     sortByCalories.addEventListener('click', () => {
-        sortChoicesContainer.classList.toggle('active')
+        sortChoicesContainer.classList.remove('active')
         results.innerHTML = ""
     const sorted = recipes.sort((a,b) => a.recipe.calories - b.recipe.calories)
 sorted.forEach(item => {
@@ -185,7 +185,7 @@ sorted.forEach(item => {
 })
     })
     sortByIng.addEventListener('click', () => {
-        sortChoicesContainer.classList.toggle('active')
+        sortChoicesContainer.classList.remove('active')
         results.innerHTML = ""
     const sorted = recipes.sort((a,b) => a.recipe.ingredients.length - b.recipe.ingredients.length)
 sorted.forEach(item => {
