@@ -10,9 +10,19 @@ const ingWrapper = document.querySelector('.ing-wrapper')
 const mealImg = document.querySelector('.meal-img')
 const amountIngLine = document.querySelector('.amount-ing')
 const showMoreBtn = document.querySelector('.showMoreBtn')
+const homeBtn = document.querySelector('#homeBtn')
+const sortBtn = document.querySelector('.sortBtn')
+const sortChoicesContainer = document.querySelector('.sortChoices')
+const sortByCalories = document.querySelector('.byCalories')
+const sortByIng = document.querySelector('.byIngredients')
+const sortBtnContainer = document.querySelector('.sort-div')
 let amountCards = 0;
 let plusAmountCards = 10;
-let searchValue;
+let searchValue = searchInput.value
+let allRecipes = []
+sortBtn.addEventListener('click', () => {
+    sortChoicesContainer.classList.toggle('active')
+})
 //close popup Btn
 closeBtn.addEventListener('click', e => {
     if(e.target || e.target.parentElement.classList.contains('close-div')) {
@@ -21,6 +31,9 @@ closeBtn.addEventListener('click', e => {
 popup.classList.remove('active')
 document.body.classList.remove('active')
     }
+})
+homeBtn.addEventListener('click', () => {
+location.reload()
 })
 //
 bottomIcons.forEach(icon => {
@@ -33,7 +46,7 @@ bottomIcons.forEach(icon => {
 })
 cardsDefault.forEach(card => {
     card.addEventListener('click', e => {
-        getParentforDefaultCard(e, 'dessert')
+      getParentforDefaultCard(e, 'dessert')
         getParentforDefaultCard(e, 'lunch')
         getParentforDefaultCard(e, 'dinner')
         getParentforDefaultCard(e, 'breakfast')
@@ -49,8 +62,7 @@ function getParentforDefaultCard(e, value) {
 // getting random recipes
 const apiKey = `727c3737f944d6ab5ec47f0cb6470b2a`
 const id = `5bd1ce99`
-async function getRecipes(searchTerm) {
-  
+async function getRecipes(searchTerm) {  
 const response = await fetch(`https://api.edamam.com/search?q=${searchTerm}&app_id=${id}&app_key=${apiKey}&from=${amountCards}&to=${plusAmountCards}`)
 const data = await response.json()
 const finalData = data.hits;
@@ -62,7 +74,14 @@ cardsDefault.forEach(card => {
 })
 amountCards += 10;
 plusAmountCards += 10;
+Array.prototype.push.apply(allRecipes, finalData)
+if(!sortBtnContainer.classList.contains('active')) {
+    sortBtnContainer.classList.add('active')
 }
+sortBy(allRecipes)
+}
+
+
 
 function displayRecipes(data) {
     const card = document.createElement('div')
@@ -121,11 +140,11 @@ if(searchValue === "") {
 showErr()
 }
 else {
-results.innerHTML = ""
+    allRecipes = []
+    results.innerHTML = ""
 getRecipes(searchValue)
     }
     })
-
 function showErr() {
 const searchEl = document.querySelector('.search')
 const wrapper = searchEl.parentElement
@@ -142,7 +161,7 @@ setTimeout(() => {
 window.addEventListener('scroll', () => {
     const {clientHeight, scrollTop, scrollHeight} = document.documentElement;
   
-    if(clientHeight + scrollTop >= scrollHeight - 50) {
+    if(clientHeight + scrollTop >= scrollHeight - 10) {
         showMoreBtn.classList.add('activeBtn')
     } else {
         showMoreBtn.classList.remove('activeBtn')
@@ -155,4 +174,23 @@ if(searchValue !== undefined) {
 })
 
 //preventing fetch function execute more than once in a range of delay
+
+function sortBy(recipes) {
+    sortByCalories.addEventListener('click', () => {
+        sortChoicesContainer.classList.toggle('active')
+        results.innerHTML = ""
+    const sorted = recipes.sort((a,b) => a.recipe.calories - b.recipe.calories)
+sorted.forEach(item => {
+    displayRecipes(item)
+})
+    })
+    sortByIng.addEventListener('click', () => {
+        sortChoicesContainer.classList.toggle('active')
+        results.innerHTML = ""
+    const sorted = recipes.sort((a,b) => a.recipe.ingredients.length - b.recipe.ingredients.length)
+sorted.forEach(item => {
+    displayRecipes(item)
+})
+    })
+}
 
