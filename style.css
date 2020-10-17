@@ -246,6 +246,41 @@
   margin-bottom: 0.2rem;
 }
 
+.favouriteMeals {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-bottom: 4rem;
+}
+
+.favMeal {
+  margin-bottom: 0.3rem;
+  position: relative;
+}
+
+.closeDiv {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.3rem;
+}
+
+.closeDiv i {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #111;
+}
+
+.favMealImg img {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -446,9 +481,14 @@ body.active {
   padding: 0.5rem 1rem;
 }
 
-.card-bottom a i {
+.card-bottom i {
   color: rgba(17, 17, 17, 0.5);
-  z-index: 1;
+  font-size: 1.5rem;
+}
+
+.card-bottom i.active {
+  color: purple;
+  font-weight: 900;
 }
 
 .mealType {

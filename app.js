@@ -16,6 +16,7 @@ const sortChoicesContainer = document.querySelector('.sortChoices')
 const sortByCalories = document.querySelector('.byCalories')
 const sortByIng = document.querySelector('.byIngredients')
 const sortBtnContainer = document.querySelector('.sort-div')
+
 let amountCards = 0;
 let plusAmountCards = 10;
 let searchValue = searchInput.value
@@ -59,13 +60,15 @@ function getParentforDefaultCard(e, value) {
         getRecipes(searchValue)
     }
 }
-// getting random recipes
 const apiKey = `727c3737f944d6ab5ec47f0cb6470b2a`
 const id = `5bd1ce99`
+
+// getting random recipes
+
 async function getRecipes(searchTerm) {  
-const response = await fetch(`https://api.edamam.com/search?q=${searchTerm}&app_id=${id}&app_key=${apiKey}&from=${amountCards}&to=${plusAmountCards}`)
-const data = await response.json()
-const finalData = data.hits;
+    const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/categories.php`)
+    const data = await res.json()
+    console.log(data);
 finalData.forEach(item => {
     displayRecipes(item)
 })
@@ -83,6 +86,7 @@ sortBy(allRecipes)
 
 
 
+
 function displayRecipes(data) {
     const card = document.createElement('div')
     card.classList.add('card')
@@ -92,16 +96,46 @@ function displayRecipes(data) {
   </div>
   <div class="card-bottom">
               <p class="mealType">${data.recipe.label}</p>
-              <a href="#"><i class="fas fa-heart"></i></a>
+              <i class="fas fa-heart"></i>
             </div>
             `
-card.addEventListener('click', () => {
-showMealInfo(data)
+            const favBtn = card.querySelector('.card-bottom .fa-heart')
+            favBtn.addEventListener('click', () => {
+                if(!favBtn.classList.contains('active')) {
+                    favBtn.classList.add('active')
+                    addMealLS(data.recipe.label)
+                } else {
+                    favBtn.classList.remove('active')
+                    removeMealLS(data.recipe.label)
+                }
+            })
+card.addEventListener('click', (e) => {
+    if(!e.target.classList.contains('fa-heart')) {
+        showMealInfo(data)
+    } 
 })
 results.appendChild(card)
 }
+function addMealLS(meal) {
+    const meals = getMealLS()
+    localStorage.setItem('meals', JSON.stringify([...meals, meal]))
+    }
+    
+    function getMealLS() {
+    const meals = JSON.parse(localStorage.getItem('meals'));
+        meals.filter((a,b) => meals.indexOf(a) == b)
+    return meals === null ? [] : meals;
+    }
+    function removeMealLS(meal) {
+    const meals = getMealLS()
+    localStorage.setItem('meals', JSON.stringify(meals.filter((id) => id !== meal)))
+    }
 
-function showMealInfo(data) {
+
+
+
+
+/*function showMealInfo(data) {
     popup.classList.add('active')
     document.body.classList.add('active')
     mealImg.src = data.recipe.image;
@@ -133,7 +167,7 @@ nutrientsNeeded.forEach(nutrient => {
             ingWrapper.appendChild(ingEl)
     })
 }
-
+*/
 searchIcon.addEventListener('click', () => {
 searchValue = searchInput.value;
 if(searchValue === "") {

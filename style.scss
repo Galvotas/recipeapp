@@ -1,5 +1,6 @@
 @import "popup";
 @import "sortSection";
+@import "favs";
 * {
   margin: 0;
   padding: 0;
@@ -129,10 +130,13 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  a {
-    i {
-      color: rgba(17, 17, 17, 0.5);
-      z-index: 1;
+
+  i {
+    color: rgba(17, 17, 17, 0.5);
+    font-size: 1.5rem;
+    &.active {
+      color: purple;
+      font-weight: 900;
     }
   }
 }
