@@ -10,7 +10,6 @@ async function getRecipeById(id) {
     const apiKey = `9973533` 
     const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/lookup.php?i=${id}`)
     const data = await res.json()
-    console.log(data.meals);
     return data.meals
 
     }

@@ -12,6 +12,8 @@ html {
 body {
   font-family: "Open Sans", sans-serif;
   width: 100%;
+  overflow-x: hidden;
+  min-height: 100vh;
   &.active {
     overflow-y: hidden;
   }
@@ -59,6 +61,7 @@ body {
     }
     input {
       border: 0;
+      width: 100%;
       &:focus {
         outline: none;
       }
@@ -177,5 +180,31 @@ body {
         color: #faa795;
       }
     }
+  }
+}
+@media only screen and (min-width: 980px) {
+  html {
+    font-size: 130%;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(2, 0, 36);
+    background: linear-gradient(
+      130deg,
+      rgba(2, 0, 36, 1) 0%,
+      rgba(6, 5, 85, 0.623) 20%,
+      rgb(40, 40, 168) 35%,
+      rgb(81, 112, 190) 47%,
+      rgba(6, 78, 166, 1) 57%,
+      rgba(3, 134, 203, 1) 75%,
+      rgba(0, 212, 255, 1) 100%
+    );
+    padding: 5rem 0;
+  }
+  .wrapper {
+    width: 70%;
+    background-color: #fff;
   }
 }

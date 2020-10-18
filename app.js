@@ -12,12 +12,12 @@ const sortBtn = document.querySelector('.sortBtn')
 const sortChoicesContainer = document.querySelector('.sortChoices')
 const sortByCalories = document.querySelector('.byCalories')
 const sortByIng = document.querySelector('.byIngredients')
-const sortBtnContainer = document.querySelector('.sort-div')
 
 let searchValue = searchInput.value
 sortBtn.addEventListener('click', () => {
     sortChoicesContainer.classList.toggle('active')
 })
+
 //close popup Btn
 closeBtn.addEventListener('click', e => {
     if(e.target || e.target.parentElement.classList.contains('close-div')) {

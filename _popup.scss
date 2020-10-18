@@ -7,7 +7,6 @@
   right: 0;
   height: 100vh;
   background-color: #fff;
-  overflow-y: scroll;
   visibility: hidden;
   z-index: -1;
   transition: all 0.5s ease-in-out;
@@ -132,6 +131,20 @@
     }
     &:focus {
       outline: none;
+    }
+  }
+}
+@media only screen and (min-width: 980px) {
+  .popup-container {
+    padding: 1rem 3rem;
+    overflow: auto;
+    width: 90%;
+    margin: auto;
+    margin: 2rem auto 2rem auto;
+    border-radius: 2rem;
+
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }
