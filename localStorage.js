@@ -10,14 +10,13 @@ async function getRecipeById(id) {
     const apiKey = `9973533` 
     const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/lookup.php?i=${id}`)
     const data = await res.json()
+    console.log(data.meals);
     return data.meals
 
     }
     fetchFavMeals()
 
 
-
-    
     function getMealLS() {
     const meals = JSON.parse(localStorage.getItem('meals'));
     return meals === null ? [] : meals;
@@ -29,9 +28,9 @@ async function getRecipeById(id) {
    
     async function fetchFavMeals() {
         const mealsById = getMealLS();
-        
+        const sortedMeals = mealsById.filter((a,b) => mealsById.indexOf(a) === b)
         for(let i = 0; i < mealsById.length; i++) {
-    const mealId = mealsById[i];
+    const mealId = sortedMeals[i];
      const meal = await getRecipeById(mealId)
      addMealToFav(meal[0])
         }
