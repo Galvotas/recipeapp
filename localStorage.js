@@ -1,15 +1,20 @@
-const apiKey = `727c3737f944d6ab5ec47f0cb6470b2a`
-const id = `5bd1ce99`
 
 const favCon = document.querySelector('.favouriteMeals')
+const mealImg = document.querySelector('.meal-img')
+const popup = document.querySelector('.popup-container')
+const nutriWrapper = document.querySelector('.nutri-wrapper')
+const ingWrapper = document.querySelector('.ing-wrapper')
 
-fetchFavMeals()
 
+async function getRecipeById(id) {
+    const apiKey = `9973533` 
+    const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/lookup.php?i=${id}`)
+    const data = await res.json()
+    return data.meals
 
-async function getRecipeByLabel(label) {
-    const response = await fetch(`https://api.edamam.com/search?q=${label}&app_id=${id}&app_key=${apiKey}&from=0&to=1`)
-const data = await response.json();
-}
+    }
+    fetchFavMeals()
+
 
 
     
@@ -17,13 +22,18 @@ const data = await response.json();
     const meals = JSON.parse(localStorage.getItem('meals'));
     return meals === null ? [] : meals;
     }
+    function removeMealLS(meal) {
+        const meals = getMealLS()
+        localStorage.setItem('meals', JSON.stringify(meals.filter((id) => id !== meal)))
+        }
    
     async function fetchFavMeals() {
-        const mealsByLabel = getMealLS();
-        for(let i = 0; i < mealsByLabel.length; i++) {
-    const mealByLabel = mealsByLabel[i];
-     const meal = await getRecipeByLabel(mealByLabel)
-     addMealToFav(meal)
+        const mealsById = getMealLS();
+        
+        for(let i = 0; i < mealsById.length; i++) {
+    const mealId = mealsById[i];
+     const meal = await getRecipeById(mealId)
+     addMealToFav(meal[0])
         }
     }
 
@@ -33,15 +43,63 @@ const data = await response.json();
      mealEl.innerHTML = `
      <div class="closeDiv"><i class="fas fa-times"></i></div>
      <div class="favMealImg">
-     <img src="${data.image}" width="100%"
+     <img src="${data.strMealThumb}" width="100%"
       height="150px" alt="">
     </div>
     <div class="meal-info">
-     <h6 class="mealName">${data.label}</h6>
+     <h6 class="mealName">${data.strMeal}</h6>
     </div>
      `
      favCon.appendChild(mealEl)
-     mealEl.addEventListener('click', () => {
-
+     mealEl.addEventListener('click', (e) => {
+if(e.target.classList.contains('fa-times')) {
+    const getMealId = data.idMeal
+    e.target.parentElement.parentElement.style.display = 'none'
+    removeMealLS(getMealId)
+} else if(!e.target.classList.contains('fa-times')) {
+    showMealInfo(data.idMeal)
+}
      })
     }
+    this.addEventListener('click', e =>  console.log(e.target))
+
+
+    async function showMealInfo(data) {
+        const mealId = data;
+    const meal = await getRecipeById(mealId)
+        popup.classList.add('active')
+        document.body.classList.add('active')
+        mealImg.src = meal[0].strMealThumb;
+        const label = document.querySelector('.label')
+        label.innerHTML = meal[0].strMeal
+        //get ingredients
+        const ingredients = []
+         for(let i = 1; i < 20; i++) {
+             if(meal[0]['strIngredient'+i]) {
+                 ingredients.push(`${meal[0]['strIngredient' +i]} / ${meal[0]['strMeasure'+i]}`)
+             } else {
+                 break;
+             }
+        }
+        let output = ''
+        ingredients.forEach(ing => {
+            output += `
+            <li>${ing}</li>
+            `
+        })
+        const list = document.createElement('ul')
+       list.innerHTML = output
+       ingWrapper.appendChild(list)
+    nutriWrapper.innerHTML = `
+    <p>${meal[0].strInstructions}</p>
+    `
+    }
+    const closeBtn = document.querySelector('.close-div')
+    closeBtn.addEventListener('click', e => {
+        if(e.target || e.target.parentElement.classList.contains('close-div')) {
+            nutriWrapper.innerHTML = "";
+            ingWrapper.innerHTML = ""
+    popup.classList.remove('active')
+    document.body.classList.remove('active')
+        }
+    })

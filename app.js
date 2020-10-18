@@ -17,10 +17,7 @@ const sortByCalories = document.querySelector('.byCalories')
 const sortByIng = document.querySelector('.byIngredients')
 const sortBtnContainer = document.querySelector('.sort-div')
 
-let amountCards = 0;
-let plusAmountCards = 10;
 let searchValue = searchInput.value
-let allRecipes = []
 sortBtn.addEventListener('click', () => {
     sortChoicesContainer.classList.toggle('active')
 })
@@ -45,46 +42,63 @@ bottomIcons.forEach(icon => {
         icon.classList.add('activeThumb')
     })
 })
-cardsDefault.forEach(card => {
-    card.addEventListener('click', e => {
-      getParentforDefaultCard(e, 'dessert')
-        getParentforDefaultCard(e, 'lunch')
-        getParentforDefaultCard(e, 'dinner')
-        getParentforDefaultCard(e, 'breakfast')
-    })
-})
-function getParentforDefaultCard(e, value) {
-    const parent = e.target.parentElement.parentElement;
-    if(parent.classList.contains(`${value}`)) {
-        searchValue = `${value}`;
-        getRecipes(searchValue)
-    }
-}
-const apiKey = `727c3737f944d6ab5ec47f0cb6470b2a`
-const id = `5bd1ce99`
 
 // getting random recipes
+const apiKey = `9973533` 
 
-async function getRecipes(searchTerm) {  
+async function getRecipeCategories() { 
     const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/categories.php`)
     const data = await res.json()
-    console.log(data);
-finalData.forEach(item => {
-    displayRecipes(item)
+    const finalData = data.categories
+finalData.forEach(category => {
+    displayCategories(category)
 })
-cardsDefault.forEach(card => {
-    card.style.display = 'none'
-})
-amountCards += 10;
-plusAmountCards += 10;
-Array.prototype.push.apply(allRecipes, finalData)
-if(!sortBtnContainer.classList.contains('active')) {
-    sortBtnContainer.classList.add('active')
 }
-sortBy(allRecipes)
+getRecipeCategories()
+
+async function getRecipesByCategory(categoryName) {
+    results.innerHTML = ""
+    const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/filter.php?c=${categoryName}`)
+    const data = await res.json()
+data.meals.forEach(meal => {
+    displayRecipes(meal)
+})
+}
+async function getRecipeById(id) {
+const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/lookup.php?i=${id}
+`)
+const data = await res.json()
+return data;
+
+}
+async function searchMealByName(searchTerm) {
+    const res = await fetch(`https://www.themealdb.com/api/json/v2/${apiKey}/search.php?s=${searchTerm}
+    `)
+    const data = await res.json()
+data.meals.forEach(meal => {
+    displayRecipes(meal)
+})
 }
 
 
+function displayCategories(categoryData) {
+const categoryCard = document.createElement('div')
+categoryCard.classList.add('card')
+categoryCard.innerHTML = `
+<div class="card-image">
+<img src="${categoryData.strCategoryThumb}" alt="" />
+</div>
+<div class="card-bottom">
+<p class="mealType">${categoryData.strCategory}</p>
+</div>
+`
+results.appendChild(categoryCard)
+
+categoryCard.addEventListener('click', () => {
+    const catName = categoryData.strCategory
+getRecipesByCategory(catName)
+})
+}
 
 
 function displayRecipes(data) {
@@ -92,10 +106,10 @@ function displayRecipes(data) {
     card.classList.add('card')
     card.innerHTML = `
     <div class="card-image">
-    <img src="${data.recipe.image}" alt="Couldn't Load Image" />
+    <img src="${data.strMealThumb}" alt="Couldn't Load Image" />
   </div>
   <div class="card-bottom">
-              <p class="mealType">${data.recipe.label}</p>
+              <p class="mealType">${data.strMeal}</p>
               <i class="fas fa-heart"></i>
             </div>
             `
@@ -103,15 +117,16 @@ function displayRecipes(data) {
             favBtn.addEventListener('click', () => {
                 if(!favBtn.classList.contains('active')) {
                     favBtn.classList.add('active')
-                    addMealLS(data.recipe.label)
+                    addMealLS(data.idMeal)
                 } else {
                     favBtn.classList.remove('active')
-                    removeMealLS(data.recipe.label)
+                    removeMealLS(data.idMeal)
                 }
             })
+            
 card.addEventListener('click', (e) => {
     if(!e.target.classList.contains('fa-heart')) {
-        showMealInfo(data)
+     showMealInfo(data)
     } 
 })
 results.appendChild(card)
@@ -123,7 +138,6 @@ function addMealLS(meal) {
     
     function getMealLS() {
     const meals = JSON.parse(localStorage.getItem('meals'));
-        meals.filter((a,b) => meals.indexOf(a) == b)
     return meals === null ? [] : meals;
     }
     function removeMealLS(meal) {
@@ -135,48 +149,46 @@ function addMealLS(meal) {
 
 
 
-/*function showMealInfo(data) {
+ async function showMealInfo(data) {
+    const mealId = data.idMeal;
+const meal = await getRecipeById(mealId)
+const mealInfo = meal.meals[0]
     popup.classList.add('active')
     document.body.classList.add('active')
-    mealImg.src = data.recipe.image;
-    amountIngLine.innerHTML =`${data.recipe.ingredients.length} ingredients in this recipe`;
-    const msg = document.querySelector('.prep-time')
-    msg.textContent = `Preparation time: ${data.recipe.totalTime}min`
+    mealImg.src = mealInfo.strMealThumb;
     const label = document.querySelector('.label')
-    label.innerHTML = data.recipe.label
-    const ings = data.recipe.ingredients
-    const allNutrients = data.recipe.totalNutrients;
-const nutrientsNeeded = [allNutrients.ENERC_KCAL, allNutrients.FAT, allNutrients.PROCNT, allNutrients.CHOCDF, allNutrients.SUGAR, allNutrients.MG, allNutrients.VITB6A, allNutrients.VITB12]
-nutrientsNeeded.forEach(nutrient => {
-    nutrientsNeeded.sort((a) => a.label)
-    const ingEl = document.createElement('div')
-        ingEl.classList.add('ing-content')
-        ingEl.innerHTML = `
-        <h5 class="ing-name">${nutrient.label}</h5>
-        <h5 class="ing-amount">${nutrient.quantity.toFixed(2)}${nutrient.unit}</h5>
+    label.innerHTML = mealInfo.strMeal
+    //get ingredients
+    const ingredients = []
+     for(let i = 1; i < 20; i++) {
+         if(mealInfo['strIngredient'+i]) {
+             ingredients.push(`${mealInfo['strIngredient' +i]} / ${mealInfo['strMeasure'+i]}`)
+         } else {
+             break;
+         }
+    }
+    let output = ''
+    ingredients.forEach(ing => {
+        output += `
+        <li>${ing}</li>
         `
-        nutriWrapper.appendChild(ingEl)
-})
-    ings.forEach(ing => {
-        const ingEl = document.createElement('div')
-        ingEl.classList.add('ing-content')
-
-            ingEl.innerHTML = `
-            <h5 class="ing-name">${ing.text}</h5>
-            `
-            ingWrapper.appendChild(ingEl)
     })
+    const list = document.createElement('ul')
+   list.innerHTML = output
+   ingWrapper.appendChild(list)
+nutriWrapper.innerHTML = `
+<p>${mealInfo.strInstructions}</p>
+`
 }
-*/
+
 searchIcon.addEventListener('click', () => {
 searchValue = searchInput.value;
 if(searchValue === "") {
 showErr()
 }
 else {
-    allRecipes = []
     results.innerHTML = ""
-getRecipes(searchValue)
+searchMealByName(searchValue)
     }
     })
 function showErr() {
@@ -192,7 +204,7 @@ setTimeout(() => {
 }
 
 // infinite scroll
-window.addEventListener('scroll', () => {
+/*window.addEventListener('scroll', () => {
     const {clientHeight, scrollTop, scrollHeight} = document.documentElement;
   
     if(clientHeight + scrollTop >= scrollHeight - 100) {
@@ -200,12 +212,7 @@ window.addEventListener('scroll', () => {
     } else {
         showMoreBtn.classList.remove('activeBtn')
     }
-})
-showMoreBtn.addEventListener('click', () => {
-if(searchValue !== undefined) {
-    getRecipes(searchValue)
-}
-})
+})*/
 
 //preventing fetch function execute more than once in a range of delay
 

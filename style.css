@@ -31,7 +31,7 @@
 .close-div {
   position: absolute;
   right: 1rem;
-  top: 0.5rem;
+  top: 1rem;
 }
 
 .close-div i {
@@ -40,6 +40,7 @@
 
 .popup-header h1 {
   font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .prep-info {
@@ -81,6 +82,12 @@
   margin-bottom: 3rem;
 }
 
+.nutri-wrapper p {
+  font-size: 0.7rem;
+  padding-right: 1rem;
+  letter-spacing: 0.1rem;
+}
+
 .ing-content {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -94,6 +101,18 @@
   margin: 0.5rem 0;
   border-bottom: 2px solid #ddd;
   padding: 0.3rem 0;
+}
+
+.ing-wrapper ul {
+  list-style: none;
+}
+
+.ing-wrapper ul li {
+  line-height: 1.3rem;
+  border-bottom: 1px solid #ddd;
+  letter-spacing: 0.1rem;
+  padding: 0.1rem 0;
+  margin-bottom: 0.2rem;
 }
 
 .appetit {
